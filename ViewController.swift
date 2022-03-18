@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 import Alamofire
 import SwiftyJSON
-class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +43,14 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
     @IBOutlet weak var name_label_outlet: UILabel!
     @IBOutlet weak var view2_metin_outlet: UILabel!
     @IBOutlet weak var view2_devaminioku_label_outlet: UILabel!
-    @IBOutlet weak var table_view_outlet: UITableView!
+    @IBOutlet weak var table_view_outlet: UITableView!{
+        didSet{
+            table_view_outlet.delegate = self
+            table_view_outlet.dataSource = self
+            table_view_outlet.rowHeight = 225
+            table_view_outlet.backgroundColor = .clear
+        }
+    }
     @IBOutlet weak var collection_view_1_outlet: UICollectionView!{
         didSet{
             collection_view_1_outlet.dataSource = self
@@ -57,6 +64,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
             collection_view_2_outlet.dataSource = self
             collection_view_2_outlet.delegate = self
             collection_view_2_outlet.backgroundColor = .clear
+            collection_view_2_outlet.addLine(position: .bottom, color: Color._106B77, width: 1.0)
         }
     }
     @IBOutlet weak var collection_view_3_outlet: UICollectionView!{
@@ -64,6 +72,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
             collection_view_3_outlet.dataSource = self
             collection_view_3_outlet.delegate = self
             collection_view_3_outlet.backgroundColor = .clear
+            collection_view_3_outlet.addLine(position: .bottom, color: Color._106B77, width: 1.0)
         }
     }
     @IBOutlet weak var collection_view_4_outlet: UICollectionView!{
@@ -71,6 +80,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
             collection_view_4_outlet.dataSource = self
             collection_view_4_outlet.delegate = self
             collection_view_4_outlet.backgroundColor = .clear
+            collection_view_4_outlet.addLine(position: .bottom, color: Color._106B77, width: 1.0)
         }
     }
     @IBOutlet weak var collection_view_5_outlet: UICollectionView!{
@@ -78,6 +88,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
             collection_view_5_outlet.dataSource = self
             collection_view_5_outlet.delegate = self
             collection_view_5_outlet.backgroundColor = .clear
+            collection_view_5_outlet.addLine(position: .bottom, color: Color._106B77, width: 1.0)
         }
     }
     @IBOutlet weak var collection_view_6_outlet: UICollectionView!{
@@ -85,6 +96,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
             collection_view_6_outlet.dataSource = self
             collection_view_6_outlet.delegate = self
             collection_view_6_outlet.backgroundColor = .clear
+            collection_view_6_outlet.addLine(position: .bottom, color: Color._106B77, width: 1.0)
         }
     }
 }
@@ -113,9 +125,10 @@ extension ViewController{
                 table_view_outlet.reloadData()
                 view2_baslik_label_outlet.text = kiduga["data"]["weekly"]["tr"]["name"].stringValue
                 view2_metin_outlet.text = kiduga["data"]["weekly"]["tr"]["desc"].stringValue
-//                person_label_outlet.text = kiduga["data"]["children"]["bDay"]["tr"].stringValue
-//                name_label_outlet.text = kiduga["data"]["children"]["name"].stringValue
-//
+                person_label_outlet.text = kiduga["data"]["childInfo"]["bDay"]["tr"].stringValue
+                person_label_outlet.textColor = Color._106B77
+                name_label_outlet.text = kiduga["data"]["userInfo"]["name"].stringValue
+
                 print(" gelen data: \(kiduga)")
             case .failure(let error):
                 Swift.print(error)
@@ -220,7 +233,8 @@ extension ViewController{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = table_view_outlet.dequeueReusableCell(withIdentifier: "TableViewCell",for: indexPath) as! TableViewCell
         cell.backgroundColor = .clear
-        Url_To_Image(url: imageBaseURL + hedef["data"]["blogList"][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
+        Url_To_Image(url: imageBaseURL + kiduga["data"]["blogList"][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
+        
         cell.label_outlet.text = kiduga["data"]["blogList"][indexPath.item]["detail"]["tr"]["name"].stringValue
         cell.label_button_outlet.text = kiduga["data"]["bebek_bakimi"][indexPath.item]["bakim_text"]["tr"].stringValue
         cell.label_button_outlet.layer.cornerRadius = 12
