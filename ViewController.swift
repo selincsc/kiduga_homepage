@@ -43,6 +43,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
     @IBOutlet weak var name_label_outlet: UILabel!
     @IBOutlet weak var view2_metin_outlet: UILabel!
     @IBOutlet weak var view2_devaminioku_label_outlet: UILabel!
+    @IBOutlet weak var table_view_outlet: UITableView!
     @IBOutlet weak var collection_view_1_outlet: UICollectionView!{
         didSet{
             collection_view_1_outlet.dataSource = self
@@ -106,6 +107,10 @@ extension ViewController{
                 collection_view_1_outlet.reloadData()
                 collection_view_2_outlet.reloadData()
                 collection_view_3_outlet.reloadData()
+                collection_view_4_outlet.reloadData()
+                collection_view_5_outlet.reloadData()
+                collection_view_6_outlet.reloadData()
+                table_view_outlet.reloadData()
                 view2_baslik_label_outlet.text = kiduga["data"]["weekly"]["tr"]["name"].stringValue
                 view2_metin_outlet.text = kiduga["data"]["weekly"]["tr"]["desc"].stringValue
 //                person_label_outlet.text = kiduga["data"]["children"]["bDay"]["tr"].stringValue
@@ -147,19 +152,38 @@ extension ViewController{
             return cell
         }else if (collectionView == collection_view_4_outlet) {
             let cell = collection_view_4_outlet.dequeueReusableCell(withReuseIdentifier: "ayinoyuncaklari_CollectionViewCell",for: indexPath) as! ayinoyuncaklari_CollectionViewCell
-            Url_To_Image(url: imageBaseURL + kiduga["data"]["bebek_bakimi"][][indexPath.item]["bakim_img"].stringValue, imageView: cell.image_view_outlet)
+            Url_To_Image(url: imageBaseURL + kiduga["data"]["toyList"][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
+            cell.label_outlet.text = kiduga["data"]["toyList"][indexPath.item]["detail"]["tr"]["name"].stringValue
             cell.layer.cornerRadius = 12
             cell.backgroundColor = .clear
             cell.view_outlet.layer.cornerRadius = 12
             cell.image_view_outlet.contentMode = .scaleToFill
             return cell
+        }else if (collectionView == collection_view_5_outlet) {
+            let cell = collection_view_5_outlet.dequeueReusableCell(withReuseIdentifier: "masal_CollectionViewCell",for: indexPath) as! masal_CollectionViewCell
+            Url_To_Image(url: imageBaseURL + kiduga["data"]["storyList"][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
+            cell.label_outlet.text = kiduga["data"]["storyList"][indexPath.item]["detail"]["tr"]["name"].stringValue
+            cell.layer.cornerRadius = 12
+            cell.backgroundColor = .clear
+            cell.view_outlet.layer.cornerRadius = 12
+            cell.image_view_outlet.contentMode = .scaleToFill
+            cell.image_view_outlet.layer.cornerRadius = 12
+            return cell
+        }else if (collectionView == collection_view_6_outlet) {
+            let cell = collection_view_6_outlet.dequeueReusableCell(withReuseIdentifier: "mu_zik_CollectionViewCell",for: indexPath) as! mu_zik_CollectionViewCell
+            Url_To_Image(url: imageBaseURL + kiduga["data"]["musicList"][][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
+            cell.label_outlet.text = kiduga["data"]["storyList"][indexPath.item]["detail"]["tr"]["name"].stringValue
+            
+            cell.layer.cornerRadius = 12
+            cell.backgroundColor = .clear
+            cell.view_outlet.layer.cornerRadius = 12
+            cell.image_view_outlet.contentMode = .scaleToFill
+            cell.image_view_outlet.layer.cornerRadius = 12
+            return cell
         }
         else{
             let cell = collection_view_3_outlet.dequeueReusableCell(withReuseIdentifier: "bebekgelisimi_CollectionViewCell",for: indexPath) as! bebekgelisimi_CollectionViewCell
-            content_view_outlet.autoresizesSubviews = false //contentview autoresize false yapıyoruz ki büyütürken herşey büyümesin.
-            collection_view_3_outlet.setFrameHeight(height: collection_view_3_outlet.contentSize.height) //tableview'i içindeki nesnelerin boyutu kadar büyütüyoruz.
-            content_view_outlet.setFrameHeight(height: collection_view_3_outlet.frame.maxY + 20) //contentviewe tableview max y + 20 kadar büyütüyoruz.
-            content_view_outlet.autoresizesSubviews = true //contentview autoresize true yapıyoruz. eski haline herşey dönsün.
+            
             Url_To_Image(url: imageBaseURL + kiduga["data"]["bebekGelisim"][indexPath.item]["img_url"].stringValue, imageView: cell.image_view_outlet)
             cell.label_outlet.text = kiduga["data"]["bebekGelisim"][indexPath.item]["text"]["tr"].stringValue
             cell.image_view_outlet.layer.cornerRadius = 12
@@ -175,9 +199,47 @@ extension ViewController{
         if(collectionView == collection_view_1_outlet){
             return CGSize(width: 360,height: 226)
         }else if(collectionView == collection_view_2_outlet){
-            return CGSize(width: 120,height:170 )
+            return CGSize(width: 150,height:170 )
+        }else if(collectionView == collection_view_4_outlet){
+            return CGSize(width: 150,height:170 )
+        }else if(collectionView == collection_view_5_outlet){
+            return CGSize(width: 170,height:190 )
+        }else if(collectionView == collection_view_6_outlet){
+            return CGSize(width: 170,height:190 )
         }else{
             return CGSize(width: 360,height: 210)
         }
+    }
+}
+//MARK: TABLEVIEW
+extension ViewController{
+    //TABLEVIEW
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3;
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = table_view_outlet.dequeueReusableCell(withIdentifier: "TableViewCell",for: indexPath) as! TableViewCell
+        cell.backgroundColor = .clear
+        Url_To_Image(url: imageBaseURL + hedef["data"]["blogList"][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
+        cell.label_outlet.text = kiduga["data"]["blogList"][indexPath.item]["detail"]["tr"]["name"].stringValue
+        cell.label_button_outlet.text = kiduga["data"]["bebek_bakimi"][indexPath.item]["bakim_text"]["tr"].stringValue
+        cell.label_button_outlet.layer.cornerRadius = 12
+        cell.image_view_outlet.contentMode = .scaleToFill
+        cell.image_view_outlet.layer.cornerRadius = 12
+        cell.view_outlet.layer.cornerRadius = 12
+        cell.layer.cornerRadius = 12
+        let when = DispatchTime.now() + 0.05 //Burası 0.05 sani bekletiyor.
+        
+        DispatchQueue.main.asyncAfter(deadline: when){
+            
+            DispatchQueue.main.async{ [self] in
+                
+                content_view_outlet.autoresizesSubviews = false //contentview autoresize false yapıyoruz ki büyütürken herşey büyümesin.
+                table_view_outlet.setFrameHeight(height: table_view_outlet.contentSize.height) //tableview'i içindeki nesnelerin boyutu kadar büyütüyoruz.
+                content_view_outlet.setFrameHeight(height: table_view_outlet.frame.maxY + 20) //contentviewe tableview max y + 20 kadar büyütüyoruz.
+                content_view_outlet.autoresizesSubviews = true //contentview autoresize true yapıyoruz. eski haline herşey dönsün.
+            }
+        }
+            return cell
     }
 }
