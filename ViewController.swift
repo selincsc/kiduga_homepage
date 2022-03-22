@@ -10,11 +10,17 @@ import Kingfisher
 import Alamofire
 import SwiftyJSON
 class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         kiduga_request_list()
+        
+        
     }
+    
+    @IBOutlet weak var muzikler_label_outlet: UILabel!
+
+    @IBOutlet weak var masallar_label_outlet: UILabel!
     @IBOutlet var body_view_outlet: UIView!{
         didSet{
             body_view_outlet.backgroundColor = Color._F2F2F2
@@ -27,7 +33,7 @@ class ViewController: MyController, UICollectionViewDelegate, UICollectionViewDa
     }
     @IBOutlet weak var person_label_outlet: UILabel!
     @IBOutlet var content_view_outlet: UIView!
-   
+    
     @IBOutlet weak var image_view_person_outlet: AnimatedImageView!{
         didSet{
             image_view_person_outlet.makeRounded()
@@ -128,7 +134,7 @@ extension ViewController{
                 person_label_outlet.text = kiduga["data"]["childInfo"]["bDay"]["tr"].stringValue
                 person_label_outlet.textColor = Color._106B77
                 name_label_outlet.text = kiduga["data"]["userInfo"]["name"].stringValue
-
+                
                 print(" gelen data: \(kiduga)")
             case .failure(let error):
                 Swift.print(error)
@@ -140,7 +146,19 @@ extension ViewController{
 extension ViewController{
     //COLLECTIONVIEW
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return kiduga["data"].count
+        if (collectionView == collection_view_1_outlet){
+            return 3;
+        }else if (collectionView == collection_view_2_outlet) {
+            return kiduga["data"]["bebek_bakimi"].count
+        }else if (collectionView == collection_view_4_outlet) {
+            return kiduga["data"]["toyList"].count;
+        }else if (collectionView == collection_view_5_outlet) {
+            return kiduga["data"]["storyList"].count;
+        }else if (collectionView == collection_view_6_outlet) {
+            return kiduga["data"]["musicList"].count;
+        }else {
+            return kiduga["data"]["bebekGelisim"].count;
+        }
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if (collectionView == collection_view_1_outlet){
@@ -152,7 +170,7 @@ extension ViewController{
             cell.image_outlet.layer.cornerRadius = 12
             cell.backgroundColor = .clear
             cell.image_outlet.contentMode = .scaleToFill
-           
+            
             return cell
             
         }else if (collectionView == collection_view_2_outlet) {
@@ -181,6 +199,19 @@ extension ViewController{
             cell.view_outlet.layer.cornerRadius = 12
             cell.image_view_outlet.contentMode = .scaleToFill
             cell.image_view_outlet.layer.cornerRadius = 12
+            let when = DispatchTime.now() + 0.05 //Burası 0.05 sani bekletiyor.
+            
+            DispatchQueue.main.asyncAfter(deadline: when){
+                
+                DispatchQueue.main.async{ [self] in
+                    
+                    collection_view_5_outlet.setFrameHeight(height: collection_view_5_outlet.contentSize.height) //tableview'i içindeki nesnelerin boyutu kadar büyütüyoruz.
+                    
+                    
+                    collection_view_5_outlet.setFrameY(y: masallar_label_outlet.frame.maxY + 20)
+                    muzikler_label_outlet.setFrameY(y: collection_view_5_outlet.frame.maxY + 20)
+                }
+            }
             return cell
         }else if (collectionView == collection_view_6_outlet) {
             let cell = collection_view_6_outlet.dequeueReusableCell(withReuseIdentifier: "mu_zik_CollectionViewCell",for: indexPath) as! mu_zik_CollectionViewCell
@@ -192,6 +223,21 @@ extension ViewController{
             cell.view_outlet.layer.cornerRadius = 12
             cell.image_view_outlet.contentMode = .scaleToFill
             cell.image_view_outlet.layer.cornerRadius = 12
+            let when = DispatchTime.now() + 0.05 //Burası 0.05 sani bekletiyor.
+            
+            DispatchQueue.main.asyncAfter(deadline: when){
+                
+                DispatchQueue.main.async{ [self] in
+                    
+
+                    collection_view_6_outlet.setFrameY(y:  muzikler_label_outlet.frame.maxY + 20)
+                    
+                    collection_view_6_outlet.setFrameHeight(height: collection_view_6_outlet.contentSize.height + 20)
+                    
+                    table_view_outlet.setFrameY(y: collection_view_6_outlet.frame.maxY + 20)
+
+                }
+            }
             return cell
         }
         else{
@@ -228,10 +274,28 @@ extension ViewController{
 extension ViewController{
     //TABLEVIEW
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3;
+        return kiduga["data"]["blogList"].count;
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = table_view_outlet.dequeueReusableCell(withIdentifier: "TableViewCell",for: indexPath) as! TableViewCell
+        
+        let when = DispatchTime.now() + 0.05 //Burası 0.05 sani bekletiyor.
+        
+        DispatchQueue.main.asyncAfter(deadline: when){
+            
+            DispatchQueue.main.async{ [self] in
+                
+                table_view_outlet.setFrameY(y: collection_view_6_outlet.frame.maxY + 20)
+                table_view_outlet.setFrameHeight(height: table_view_outlet.contentSize.height + 20) //tableview'i içindeki nesnelerin boyutu kadar büyütüyoruz.
+
+                content_view_outlet.autoresizesSubviews = false //contentview autoresize false yapıyoruz ki büyütürken herşey büyümesin.
+                
+                content_view_outlet.setFrameHeight(height: table_view_outlet.frame.maxY + 20) //contentviewe tableview max y + 20 kadar büyütüyoruz.
+                content_view_outlet.autoresizesSubviews = true //contentview autoresize true yapıyoruz. eski haline herşey dönsün.
+            }
+        }
+        
+        
         cell.backgroundColor = .clear
         Url_To_Image(url: imageBaseURL + kiduga["data"]["blogList"][indexPath.item]["listImage"].stringValue, imageView: cell.image_view_outlet)
         
@@ -242,18 +306,7 @@ extension ViewController{
         cell.image_view_outlet.layer.cornerRadius = 12
         cell.view_outlet.layer.cornerRadius = 12
         cell.layer.cornerRadius = 12
-        let when = DispatchTime.now() + 0.05 //Burası 0.05 sani bekletiyor.
-        
-        DispatchQueue.main.asyncAfter(deadline: when){
-            
-            DispatchQueue.main.async{ [self] in
-                
-                content_view_outlet.autoresizesSubviews = false //contentview autoresize false yapıyoruz ki büyütürken herşey büyümesin.
-                table_view_outlet.setFrameHeight(height: table_view_outlet.contentSize.height) //tableview'i içindeki nesnelerin boyutu kadar büyütüyoruz.
-                content_view_outlet.setFrameHeight(height: table_view_outlet.frame.maxY + 20) //contentviewe tableview max y + 20 kadar büyütüyoruz.
-                content_view_outlet.autoresizesSubviews = true //contentview autoresize true yapıyoruz. eski haline herşey dönsün.
-            }
-        }
-            return cell
+ 
+        return cell
     }
 }
